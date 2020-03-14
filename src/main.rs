@@ -51,7 +51,8 @@ fn main() -> ! {
         
         cortex_m::interrupt::free(move |cs| {
 
-        let mut rcc = p.RCC.configure().sysclk(8.mhz()).freeze(&mut p.FLASH);
+        // let mut rcc = p.RCC.configure().sysclk(8.mhz()).freeze(&mut p.FLASH);
+        let mut rcc = p.RCC.configure().sysclk(48.mhz()).freeze(&mut p.FLASH);
         
         let gpioa = p.GPIOA.split(&mut rcc);
         let scl = gpioa.pa9.into_alternate_af4(cs);
