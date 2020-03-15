@@ -7,7 +7,9 @@ It follows the rules of the game as described here: https://en.wikipedia.org/wik
 and here: http://rosettacode.org/wiki/Conway's_Game_of_Life
 
 It starts with a randomly generated white noise pattern, which slowly dissolves.
-Need to use some random value, e.g. read with ADC, as a seed, otherwise it's the same sequence every time.
+The RNG is seeded with a combination of values from the internal temperature sensor
+and the reference voltage, read from the ADC.
+
 
 Will restart after a 1000 generations.
 
