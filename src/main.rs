@@ -101,10 +101,7 @@ fn main() -> ! {
             disp.flush().unwrap();
 
             while gen < 1001 {
-
-                // let w: u8 = 64;
-                // let h: u8 = 64;
-        
+                
                 // clean up the number area of the counter
         
                 for m in 100..128 {
@@ -112,8 +109,7 @@ fn main() -> ! {
                         disp.set_pixel(m, n, 0);
                     }
                 }
-        
-        
+                
                 let mut text_buf = ArrayString::<[u8; 8]>::new();
         
                 gen += 1;
@@ -121,10 +117,11 @@ fn main() -> ! {
                 counter(&mut text_buf, gen);
         
                 Text::new(text_buf.as_str(), Point::new(80, 0)).into_styled(text_style).draw(&mut disp);
+                        
+                buffer = matrix_evo(buffer); // make the grid of the next generation
         
-                
-                buffer = matrix_evo(buffer);
-        
+                // display the new grid
+
                 for x in 0..WX {
                     for y in 0..HY {
                         let pixel = pixelgetter(x,y,buffer);
@@ -202,15 +199,13 @@ fn matrix_evo(buffer: [u8; 512]) -> [u8; 512] {
                     new_cell = evo(cell, neighbors);
                 }
             }
-        
 
-        if new_cell == 0 {
-            new_buffer[pixel.byteidx as usize] &= !(1 << (7-pixel.bitidx)); // clear bit to 0
-        } 
-        else {
-            new_buffer[pixel.byteidx as usize] |= 1 << (7-pixel.bitidx); // set bit to 1
-        }
-
+            if new_cell == 0 {
+                new_buffer[pixel.byteidx as usize] &= !(1 << (7-pixel.bitidx)); // clear bit to 0
+            } 
+            else {
+                new_buffer[pixel.byteidx as usize] |= 1 << (7-pixel.bitidx); // set bit to 1
+            }
 
         }
     }
@@ -218,9 +213,9 @@ fn matrix_evo(buffer: [u8; 512]) -> [u8; 512] {
 
 }
 
-
 // helper function to get the binary value of (x,y) pixel in a 1-D array of bytes
-// needs the screen width as a parameter to correctly identify the bytes of each line
+// as well as the index of the byte and the bit corresponding to that pixel
+// note: in each byte the pixel with the lowest x coordinate will correspond to the most significant bit
 
 fn pixelgetter(x: i8, y: i8, buffer: [u8; 512]) -> Pixel {
     let byteidx: u16 = y as u16 *(WX as u16 /8) + x as u16/8;
