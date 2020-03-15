@@ -6,10 +6,7 @@ It's visibly faster on 72MHz "blue pill" in Rust than on 240MHz ESP32 in MicroPy
 It follows the rules of the game as described here: https://en.wikipedia.org/wiki/Conway's_Game_of_Life
 and here: http://rosettacode.org/wiki/Conway's_Game_of_Life
 
-It starts with a randomly generated white noise pattern, which slowly dissolves.
-Problem: currently it's the same every time, as the RNG starts with the exact same seed. 
-Need to implement a "seedless" solution, or use some random value, e.g. read with ADC, as a seed.
+It starts with a randomly generated white noise pattern, which slowly dissolves. 
+The initial seed for the RNG is taken from the internal temperature sensor
 
 Will restart after a 1000 generations.
-
-The code needs some refactoring. It's not as modular as the MicroPython code at the moment.

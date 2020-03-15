@@ -1,16 +1,19 @@
 //! Conway's Game of Life
 //! 
+//! 
+//! 
 //! original MicroPython code ported to STM32F1xx board (this code is for STM32F103C8T6)
 //! 
 //! improved to store pixels as single bits, i.e. one byte is 8 pixels
+//! 
+//! first grid is generated using a random number generator
+//! seeded with a read from the internal temperature sensor through ADC
 //! 
 //! the code currently resets after a 1000 generations
 //! 
 //! the grid "dies" after less than 600 generations
 //! leaving only static or oscillating debris
-//! 
-//! next steps: use ADC to get a different RNG seed each time
-//! 
+//!  
 
 #![no_std]
 #![no_main]
@@ -28,9 +31,8 @@ use hal::{
     i2c::{BlockingI2c, DutyCycle, Mode},
     prelude::*,
     stm32,
-    delay::Delay,
-    
-};
+    adc,
+    };
 
 use ssd1306::{prelude::*, Builder as SSD1306Builder};
 
@@ -42,11 +44,9 @@ use embedded_graphics::{
     };
 
 use core::fmt;
-use core::fmt::Write;
 use arrayvec::ArrayString;
 
 struct Pixel {
-    
     byteidx: u16,
     bitidx: i8,
     value: u8,
@@ -63,13 +63,21 @@ fn main() -> ! {
     let mut flash = dp.FLASH.constrain();
     let mut rcc = dp.RCC.constrain();
 
-    let clocks = rcc.cfgr.use_hse(8.mhz()).sysclk(72.mhz()).pclk1(36.mhz()).freeze(&mut flash.acr);
-    
+    // setup clocks
 
+    let clocks = rcc.cfgr.use_hse(8.mhz()).sysclk(72.mhz()).pclk1(36.mhz()).adcclk(2.mhz()).freeze(&mut flash.acr);
+    
     let mut afio = dp.AFIO.constrain(&mut rcc.apb2);
 
     let mut gpiob = dp.GPIOB.split(&mut rcc.apb2);
     
+    // setup ADC
+
+    let mut adc = adc::Adc::adc1(dp.ADC1, &mut rcc.apb2, clocks);
+
+
+    // setup I2C interface for the display
+
     let scl = gpiob.pb8.into_alternate_open_drain(&mut gpiob.crh);
     let sda = gpiob.pb9.into_alternate_open_drain(&mut gpiob.crh);
 
@@ -95,9 +103,11 @@ fn main() -> ! {
         
     disp.init().unwrap();
   
+    let seed = adc.read_temp(); // get the initial seed for RNG from internal temperature sensor
+
     loop {
 
-        let mut rng = SmallRng::seed_from_u64(0x0101_0808_0303_0909);
+        let mut rng = SmallRng::seed_from_u64(seed as u64);
 
         let mut buffer = [0u8; 512];
         
@@ -119,7 +129,7 @@ fn main() -> ! {
         let mut text_buf = ArrayString::<[u8; 8]>::new(); // create a buffer for the counter text
 
         let mut gen: u16 = 0; // generation counter
-        
+
         counter(&mut text_buf, gen);
 
         Text::new(text_buf.as_str(), Point::new(80, 0)).into_styled(text_style).draw(&mut disp);
@@ -138,14 +148,13 @@ fn main() -> ! {
         }
 
         let mut text_buf = ArrayString::<[u8; 8]>::new();
-
+        
         gen += 1;
 
         counter(&mut text_buf, gen);
-
-        Text::new(text_buf.as_str(), Point::new(80, 0)).into_styled(text_style).draw(&mut disp);
-
         
+        Text::new(text_buf.as_str(), Point::new(80, 0)).into_styled(text_style).draw(&mut disp);
+                
         buffer = matrix_evo(buffer);
 
         for x in 0..WX {
