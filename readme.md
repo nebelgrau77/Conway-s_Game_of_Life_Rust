@@ -1,5 +1,7 @@
 # Conway-s_Game_Of_Life
 
+![](conway.gif)
+
 My original MicroPython code ported to Rust on STM32F4.
 
 It follows the rules of the game as described here: https://en.wikipedia.org/wiki/Conway's_Game_of_Life
