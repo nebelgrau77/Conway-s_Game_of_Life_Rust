@@ -112,7 +112,7 @@ fn main() -> ! {
             disp.flush().unwrap();
 
             
-            while gen < 2001 {
+            while gen < 1001 {
         
                 // clean up the number area of the counter
         
