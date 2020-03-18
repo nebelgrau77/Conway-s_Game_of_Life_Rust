@@ -33,7 +33,8 @@ use crate::hal::{
     stm32,
     i2c::I2c,
     adc,
-};
+    delay::Delay,
+    };
 
 use embedded_graphics::{
     fonts::{Font6x8, Text},
@@ -51,18 +52,26 @@ struct Pixel {
     value: u8,
 }
 
+const BOOT_DELAY_MS: u16 = 100;
+
 static WX: i8 = 64; // grid width
 static HY: i8 = 64; // grid height
 
 #[entry]
 fn main() -> ! {
 
-    if let Some(mut p) = stm32::Peripherals::take() {
+    if let (Some(mut p), Some(mut cp)) = (stm32::Peripherals::take(), cortex_m::peripheral::Peripherals::take()) {
         
         cortex_m::interrupt::free(move |cs| {
 
         let mut rcc = p.RCC.configure().sysclk(48.mhz()).freeze(&mut p.FLASH);
         
+        let mut delay = Delay::new(cp.SYST, &rcc);
+
+        //delay necessary for the I2C to initiate correctly and start on boot without having to reset the board
+
+        delay.delay_ms(BOOT_DELAY_MS);
+
         let mut adc = adc::Adc::new(p.ADC, &mut rcc);
 
         let gpioa = p.GPIOA.split(&mut rcc);
