@@ -28,9 +28,17 @@ use cortex_m_rt::entry;
 
 use rand_core::RngCore;
 
-use crate::hal::{i2c::I2c, prelude::*, stm32};
+use crate::hal::{
+    i2c::I2c, 
+    prelude::*, 
+    stm32,
+    delay::Delay,
+    };
 
-use ssd1306::{prelude::*, Builder as SSD1306Builder};
+use ssd1306::{
+    prelude::*, 
+    Builder as SSD1306Builder
+    };
 
 use embedded_graphics::{
     fonts::{Font6x8, Text},
@@ -48,13 +56,15 @@ struct Pixel {
     value: u8,
 }
 
+const BOOT_DELAY_MS: u16 = 100; 
+
 static WX: i16 = 64; // grid width
 static HY: i16 = 64; // grid height
 
 
 #[entry]
 fn main() -> ! {
-    if let (Some(dp), Some(_cp)) = (
+    if let (Some(dp), Some(cp)) = (
         stm32::Peripherals::take(),
         cortex_m::peripheral::Peripherals::take(),
 ) {
@@ -63,6 +73,12 @@ fn main() -> ! {
         // PCLK1 (internal APB1 clock frequency) set to the maximum
         let rcc = dp.RCC.constrain();
         let clocks = rcc.cfgr.use_hse(8.mhz()).sysclk(168.mhz()).pclk1(42.mhz()).freeze();
+        
+        let mut delay = Delay::new(cp.SYST, clocks);
+        
+        //delay necessary for the I2C to initiate correctly and start on boot without having to reset the board
+
+        delay.delay_ms(BOOT_DELAY_MS);
 
         // Set up I2C - SCL is PB8 and SDA is PB9; they are set to Alternate Function 4
         
