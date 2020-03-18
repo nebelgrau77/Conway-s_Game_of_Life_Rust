@@ -10,3 +10,13 @@ It starts with a randomly generated white noise pattern, which slowly dissolves.
 The initial seed for the RNG is taken from the internal temperature sensor
 
 Will restart after a 1000 generations.
+
+_Check branches for ports to other devboards:_
+* _STM32F030_
+* _STM32F051_
+* _STM32F411_
+* _STM32F407 (with hardware Random Number Generator)_
+* _STM32F407 using a dual OLED setup_
+
+
+
