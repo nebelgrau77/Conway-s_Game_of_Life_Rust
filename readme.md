@@ -1,6 +1,6 @@
 # Conway-s_Game_Of_Life
 
-My original MicroPython code ported to Rust on STM32F030.
+My original MicroPython code ported to Rust on STM32F051.
 The speed seems to be similar between the STM32 @ 48 MHz in Rust and the ESP32 @ 240MHz in MicroPython :)
 
 It follows the rules of the game as described here: https://en.wikipedia.org/wiki/Conway's_Game_of_Life
