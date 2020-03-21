@@ -102,9 +102,9 @@ dependencies = [
 
 [[package]]
 name = "embedded-graphics"
-version = "0.6.0-alpha.3"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f35680a4c0a85844fd207ba20eb4a3611189bb714cdb3b2327edd9f0e9f562eb"
+checksum = "9b2525e6b487bd2ec3c88d255ae134ccd55cf111a31a17a3008409162dcbcb1e"
 dependencies = [
  "byteorder",
 ]
@@ -205,9 +205,9 @@ checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 
 [[package]]
 name = "ssd1306"
-version = "0.3.0-alpha.4"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "607570aae71dfa8080ac5bb87429863d00e1c93d5abb93cc44fe1f68ce98048f"
+checksum = "bfef0100e990e0f49e837805ca99e09e64fb788c1829fdd9e7da345cdb0c465a"
 dependencies = [
  "embedded-graphics",
  "embedded-hal",

@@ -18,7 +18,7 @@ embedded-hal = {version = "0.2.3", features = ["unproven"]}
 
 panic-halt = "0.2.0"
 
-ssd1306 = {version ="0.3.0-alpha.4", features=["graphics"]}
+ssd1306 = {version ="0.3.0", features=["graphics"]}
 embedded-graphics = "0.6.0-alpha.3"
 
 rand_core = "0.5.1"

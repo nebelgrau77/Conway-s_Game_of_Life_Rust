@@ -12,4 +12,4 @@ First pattern is generated using built-in hardware Random Numbers Generator.
 Left and right edges of the field are considered to be stitched together, 
 as well as the top and bottom edges.
 
-Will restart after 2000 generations.
+Will restart after a 1000 generations.
