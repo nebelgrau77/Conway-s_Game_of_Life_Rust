@@ -6,6 +6,8 @@ My original MicroPython code ported to Rust on STM32F411CEU6.
 It follows the rules of the game as described here: https://en.wikipedia.org/wiki/Conway's_Game_of_Life
 and here: http://rosettacode.org/wiki/Conway's_Game_of_Life
 
+![](conway.jpg)
+
 It starts with a randomly generated white noise pattern, which slowly dissolves. 
 First pattern is generated using a software Random Numbers Generator,
 seeded with a combination of internal voltage and temperature readings.
