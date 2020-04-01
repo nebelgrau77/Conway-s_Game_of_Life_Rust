@@ -13,4 +13,4 @@ seeded with a combination of internal voltage and temperature readings.
 Left and right edges of the field are considered to be stitched together, 
 as well as the top and bottom edges.
 
-Will restart after a 1000 generations.
+Will restart after 2000 generations.

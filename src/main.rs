@@ -103,8 +103,8 @@ fn main() -> ! {
         
         disp.init().unwrap();
 
-        let mut temp = adc.convert(&tempsensor, SampleTime::Cycles_480);
-        let mut vref = adc.convert(&voltsensor, SampleTime::Cycles_480);
+        let temp = adc.convert(&tempsensor, SampleTime::Cycles_84);
+        let vref = adc.convert(&voltsensor, SampleTime::Cycles_84);
 
         // STM32F411 does not have a hardware RNG, need to use software
 
@@ -116,14 +116,20 @@ fn main() -> ! {
                         
             let text_style = TextStyleBuilder::new(Font6x8).text_color(BinaryColor::On).build();
 
-            let mut text_buf = ArrayString::<[u8; 8]>::new();
+            let mut gen_buf = ArrayString::<[u8; 8]>::new();
 
             let mut gen: u16 = 0; // generation counter
+
+            let mut cell_buf = ArrayString::<[u8; 8]>::new();
+
+            let mut cell_count: u16 = 0; //cells counter
 
             // generate first random grid
 
             rng.fill_bytes(&mut buffer);
             
+            cell_count = count_cells(&buffer);
+
             // display it
             
             for x in 0..WX {
@@ -133,32 +139,45 @@ fn main() -> ! {
                 }
             }
 
-            counter(&mut text_buf, gen);
+            counter(&mut gen_buf, gen, true);
 
-            Text::new(text_buf.as_str(), Point::new(80, 0)).into_styled(text_style).draw(&mut disp);
+            Text::new(gen_buf.as_str(), Point::new(80, 0)).into_styled(text_style).draw(&mut disp);
+
+            counter(&mut cell_buf, cell_count, false);
+
+            Text::new(cell_buf.as_str(), Point::new(80, 16)).into_styled(text_style).draw(&mut disp);
 
             disp.flush().unwrap();
             
-            while gen < 1001 {
+            while gen < 2001 {
         
                 // clean up the number area of the counter
         
                 for m in 100..128 {
-                    for n in 0..8 {
+                    for n in 0..24 {
                         disp.set_pixel(m, n, 0);
                     }
                 }
         
-                let mut text_buf = ArrayString::<[u8; 8]>::new();
+                let mut gen_buf = ArrayString::<[u8; 8]>::new();
 
                 gen += 1;
 
-                counter(&mut text_buf, gen);
+                counter(&mut gen_buf, gen, true);
                 
-                Text::new(text_buf.as_str(), Point::new(80, 0)).into_styled(text_style).draw(&mut disp);
+                Text::new(gen_buf.as_str(), Point::new(80, 0)).into_styled(text_style).draw(&mut disp);
 
                 buffer = matrix_evo(buffer);
         
+                let mut cell_buf = ArrayString::<[u8; 8]>::new();
+
+                cell_count = count_cells(&buffer);
+
+                counter(&mut cell_buf, cell_count, false);
+                
+                Text::new(cell_buf.as_str(), Point::new(80, 16)).into_styled(text_style).draw(&mut disp);
+
+
                 for x in 0..WX {
                     for y in 0..HY {
                         let pixel = pixelgetter(x,y,buffer);
@@ -344,13 +363,34 @@ fn pixelgetter(x: i16, y: i16, buffer: [u8; 512]) -> Pixel {
 
 // helper function for the generation counter
 
-fn counter(buf: &mut ArrayString<[u8; 8]>, gen: u16) {   
+fn counter(buf: &mut ArrayString<[u8; 8]>, gen: u16, flag: bool) {   
     
     let singles = gen%10;
     let tens = (gen/10)%10;
     let hundreds = (gen/100)%10;
     let thousands = (gen/1000)%10;
-            
-    fmt::write(buf, format_args!("Gen:{}{}{}{}", thousands as u8, hundreds as u8, tens as u8, singles as u8)).unwrap();
+    
+    if flag { //if true then it's gens, otherwise it's cells
+        fmt::write(buf, format_args!("Gen:{}{}{}{}", thousands as u8, hundreds as u8, tens as u8, singles as u8)).unwrap();
+    }
+    else {
+        fmt::write(buf, format_args!("Cls:{}{}{}{}", thousands as u8, hundreds as u8, tens as u8, singles as u8)).unwrap();
 
+    }
+
+
+    
+
+}
+
+
+
+fn count_cells(arr: &[u8]) -> u16 {
+    
+    let mut total: u16 = 0_u16;    
+    for i in arr.iter() {
+        
+        total += i.count_ones() as u16; //count_ones returns a u32 value       
+    }
+    return total;
 }

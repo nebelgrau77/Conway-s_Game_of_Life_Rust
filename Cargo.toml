@@ -1,6 +1,6 @@
 [package]
 name = "conway"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["nebelgrau"]
 edition = "2018"
 
@@ -24,7 +24,6 @@ embedded-graphics = "0.6.0-alpha.3"
 rand = {version = "0.7.3", default-features = false, features = [ "small_rng" ]}
 
 arrayvec = {version = "0.5.1", default-features = false}
-
 
 
 [profile.release]
