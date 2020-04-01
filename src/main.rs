@@ -7,7 +7,7 @@
 //! first grid is generated using a software random number generator
 //! seeded with a combination of internal temperature and voltage readings
 //! 
-//! the code currently resets after a 1000 generations
+//! the code currently resets after 2000 generations
 //! 
 //! "seamless" version (toroidal array): 
 //! left and right edges of the field are considered to be stitched together, 
@@ -15,6 +15,8 @@
 //! 
 //! the grid usually "dies" after a few hundred generations
 //! leaving only static or oscillating debris
+//! 
+//! v.0.2.0: added a cell counter
 //!  
 
 #![no_std]
@@ -384,6 +386,7 @@ fn counter(buf: &mut ArrayString<[u8; 8]>, gen: u16, flag: bool) {
 }
 
 
+//count active pixels in each iteration 
 
 fn count_cells(arr: &[u8]) -> u16 {
     
