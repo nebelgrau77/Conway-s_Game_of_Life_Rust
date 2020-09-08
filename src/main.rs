@@ -31,17 +31,19 @@ use arrayvec::ArrayString;
 // mod game;
 // use crate::game::game::*;
 
-
 const BOOT_DELAY_MS: u16 = 100; 
+
 
 struct Pixel {
     byteidx: u16,
     bitidx: i16,
     value: u8,
     }
-    
+
+
 static WX: i16 = 32; // grid width
 static HY: i16 = 32; // grid height
+
 
 #[entry]
 fn main() -> ! {
