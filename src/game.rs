@@ -1,29 +1,10 @@
-use panic_halt;
-
-use cortex_m;
-use cortex_m_rt::entry;
-use stm32l0xx_hal::{pac, prelude::*, rcc::{Config,MSIRange}};
-
-use ssd1306::{prelude::*, Builder as SSD1306Builder};
-
-use embedded_graphics::{
-    fonts::{Font6x8, Text},
-    pixelcolor::BinaryColor,
-    prelude::*,
-    style::TextStyleBuilder,
-    };
-
-use rand::prelude::*;
-
 use core::fmt;
 use arrayvec::ArrayString;
 
-const BOOT_DELAY_MS: u16 = 100; 
-
-struct Pixel {
+pub struct Pixel {
     byteidx: u16,
     bitidx: i16,
-    value: u8,
+    pub value: u8,
     }
 
 static WX: i16 = 32; // grid width
@@ -98,7 +79,6 @@ pub fn matrix_evo(buffer: [u8; 512]) -> [u8; 512] {
 
 }
 
-
 // helper function to get the binary value of (x,y) pixel in a 1-D array of bytes
 // as well as the index of the byte and the bit corresponding to that pixel
 // note: in each byte the pixel with the lowest x coordinate will correspond to the most significant bit
@@ -114,7 +94,6 @@ pub fn pixelgetter(x: i16, y: i16, buffer: [u8; 512]) -> Pixel {
         value: pixelval,
     };
 }
-
 
 // helper function for the generation counter
 
