@@ -14,5 +14,5 @@ Will restart after a 1000 generations.
 TO DO: 
 
 * get the initial seed for random number generation from ADC (temperature, voltage)
-* improve the modular organization (at the moment pretty much everything is imported in both main.rs and game.rs)
+* move the helper functions into a separate module 
 

@@ -1,3 +1,4 @@
 /target
 *.bin
 *.mp4
+game.rs
