@@ -13,6 +13,6 @@ Will restart after a 1000 generations.
 
 TO DO: 
 
-* move functions to a separate .rs file
 * get the initial seed for random number generation from ADC (temperature, voltage)
+* improve the modular organization (at the moment pretty much everything is imported in both main.rs and game.rs)
 
