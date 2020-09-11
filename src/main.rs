@@ -57,9 +57,16 @@ fn main() -> ! {
     // Acquire the GPIOA peripheral. This also enables the clock for GPIOA in the RCC register.
     let gpioa = dp.GPIOA.split(&mut rcc);
 
-    // set up ADC for "random" seed reading on pin A0
+    // set up ADC for "random" seed reading from internal temperature and voltage
     let mut adc = dp.ADC.constrain(&mut rcc);
-    let mut a0 = gpioa.pa0.into_analog();
+    
+    let mut temperature = stm32l0xx_hal::adc::VTemp::new(); 
+    let mut voltage = stm32l0xx_hal::adc::VRef::new();
+
+    let temp: u16 = adc.read(&mut temperature).unwrap();
+    let volt: u16 = adc.read(&mut voltage).unwrap();
+
+    let seed: u64 = temp as u64 * volt as u64;
 
     let scl = gpioa.pa9.into_open_drain_output();
     let sda = gpioa.pa10.into_open_drain_output();
@@ -71,10 +78,9 @@ fn main() -> ! {
     disp.init().unwrap();
     
     // STM32L031 does not have a hardware RNG, need to use software
-    
-    let adc_reading: u16 = adc.read(&mut a0).unwrap();
+   
 
-    let mut rng = SmallRng::seed_from_u64(adc_reading as u64);
+    let mut rng = SmallRng::seed_from_u64(seed);
         
     loop {
                         

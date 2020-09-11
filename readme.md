@@ -11,10 +11,6 @@ Will restart after a 1000 generations.
 
 ![Game of Life](conway_L0.gif)
 
-TO DO: 
-
-* currntly random seed read from a floating pin: ideally from internal temperature and voltage
-
 NOTES: 
 
 * 24MHz clock frequency is the highest currently allowed by the crate
