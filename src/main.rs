@@ -10,7 +10,13 @@
 use panic_halt;
 use cortex_m;
 use cortex_m_rt::entry;
-use stm32l0xx_hal::{pac, prelude::*, rcc::{Config,MSIRange}};
+use stm32l0xx_hal::{pac, 
+                    prelude::*, 
+                    rcc::{Config,
+                          MSIRange,
+                          PLLDiv,
+                          PLLMul,
+                          PLLSource}};
 
 use ssd1306::{prelude::*, Builder as SSD1306Builder};
 
@@ -39,23 +45,21 @@ fn main() -> ! {
     let dp = pac::Peripherals::take().unwrap();
     let cp = cortex_m::Peripherals::take().unwrap();
 
-    // Configure the clock.
-    //let mut rcc = dp.RCC.freeze(Config::hsi16()); 
-    let mut rcc = dp.RCC.freeze(Config::msi(MSIRange::Range6)); //works only with Range5 or Range6
+    // Configure the clock.    
+    let mut rcc = dp.RCC.freeze(Config::pll(PLLSource::HSI16, PLLMul::Mul3, PLLDiv::Div4)); // 24 MHz
+    //let mut rcc = dp.RCC.freeze(Config::msi(MSIRange::Range6)); //works only with Range5 or Range6
 
     let mut delay = cp.SYST.delay(rcc.clocks);
-
-    //let mut adc = dp.ADC.constrain(&mut rcc);
-
-    //let temp = VTemp::new();
-
-    //let reading = adc.read(temp).unwrap();
-
+    
     //delay necessary for the I2C to initiate correctly and start on boot without having to reset the board
     delay.delay_ms(BOOT_DELAY_MS);
 
     // Acquire the GPIOA peripheral. This also enables the clock for GPIOA in the RCC register.
     let gpioa = dp.GPIOA.split(&mut rcc);
+
+    // set up ADC for "random" seed reading on pin A0
+    let mut adc = dp.ADC.constrain(&mut rcc);
+    let mut a0 = gpioa.pa0.into_analog();
 
     let scl = gpioa.pa9.into_open_drain_output();
     let sda = gpioa.pa10.into_open_drain_output();
@@ -68,7 +72,9 @@ fn main() -> ! {
     
     // STM32L031 does not have a hardware RNG, need to use software
     
-    let mut rng = SmallRng::seed_from_u64(0xdeaf_bea7_1337_babe);
+    let adc_reading: u16 = adc.read(&mut a0).unwrap();
+
+    let mut rng = SmallRng::seed_from_u64(adc_reading as u64);
         
     loop {
                         

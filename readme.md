@@ -13,6 +13,10 @@ Will restart after a 1000 generations.
 
 TO DO: 
 
-* get the initial seed for random number generation from ADC (temperature, voltage)
+* currntly random seed read from a floating pin: ideally from internal temperature and voltage
+
+NOTES: 
+
+* 24MHz clock frequency is the highest currently allowed by the crate
 
 
