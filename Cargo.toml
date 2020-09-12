@@ -1,0 +1,35 @@
+[package]
+name = "nano33iot_conway"
+version = "0.1.0"
+authors = ["nebelgrau77"]
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino", "conway", "oled", "display", "SSD1306"]
+license = "MIT OR Apache-2.0"
+repository = ""
+readme = "README.md"
+
+[dependencies]
+cortex-m = "~0.6"
+cortex-m-rt = {version = "~0.6.12", optional = true}
+panic-halt = {version = "~0.2", optional = true}
+embedded-hal = "~0.2.3"
+nb = "~0.1"
+atsamd-hal = {version = "~0.9", default-features = false}
+
+ssd1306 = {version ="0.3.0-alpha.4", features=["graphics"]}
+embedded-graphics = "0.6.0-alpha.3"
+
+rand = {version = "0.7.3", default-features = false, features = [ "small_rng" ]}
+arrayvec = {version = "0.5.1", default-features = false}
+
+[dependencies.arduino_nano33iot]
+path = "custom_crate/arduino_nano33iot"
+version = "0.2.1-alpha"
+
+[features]
+# ask the HAL to enable atsamd21g18a support
+default = ["rt", "panic_halt", "atsamd-hal/samd21g18a"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+panic_halt = ["panic-halt"]
+unproven = ["atsamd-hal/unproven"]
+use_semihosting = []
+
