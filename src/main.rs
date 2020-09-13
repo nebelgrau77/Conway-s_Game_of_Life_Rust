@@ -14,7 +14,7 @@ use hal::time::KiloHertz;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
-use ssd1306::{prelude::*, Builder as SSD1306Builder};
+use ssd1306::{prelude::*, Builder, I2CDIBuilder};
 
 use embedded_graphics::{
     fonts::{Font6x8, Text},
@@ -49,11 +49,8 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT);    
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let gclk0 = clocks.gclk0();
-
     //delay necessary for the I2C to initiate correctly and start on boot without having to reset the board
     delay.delay_ms(BOOT_DELAY_MS);
-
 
     let i2c = hal::i2c_master(
         &mut clocks,
@@ -65,11 +62,8 @@ fn main() -> ! {
         &mut pins.port,
     );  
 
-
-
-    let mut disp: GraphicsMode<_> = SSD1306Builder::new().size(DisplaySize::Display128x32).connect_i2c(i2c).into();
-       
-
+    let interface = I2CDIBuilder::new().init(i2c);
+    let mut disp: GraphicsMode<_> = Builder::new().connect(interface).into();          
     disp.init().unwrap();
 
     let seed = 0xdead_beef_cafe_d00d;
