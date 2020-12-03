@@ -7,7 +7,7 @@ It follows the rules of the game as described here: https://en.wikipedia.org/wik
 and here: http://rosettacode.org/wiki/Conway's_Game_of_Life
 
 It starts with a randomly generated white noise pattern, which slowly dissolves. 
-The initial seed for the RNG is taken from the internal temperature sensor
+The initial seed for the RNG is taken from the internal temperature sensor, or from a True RNG where feasible.
 
 Will restart after a 1000 generations.
 
