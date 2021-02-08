@@ -1,0 +1,21 @@
+[package]
+name = "conway"
+version = "0.1.0"
+authors = ["nebelgrau77", ]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cortex-m = "0.6.2"
+cortex-m-rt = "0.6.12"
+nrf52840-hal = { version = "*", features = ["rt"]}
+panic-halt = "~0.2"
+
+ssd1306 = {version ="0.4", features=["graphics"]}
+embedded-graphics = "0.6.1"
+arrayvec = {version = "0.5.1", default-features = false}
+
+[dependencies.embedded-hal]
+version = "0.2.3"
+features = ["unproven"]
