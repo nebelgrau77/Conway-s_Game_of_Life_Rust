@@ -21,6 +21,7 @@ _Check branches for ports to other devboards:_
 * _Microchip SAMD21 on Arduino Nano 33 IoT_
 * _Microchip SAMD51 on Adafruit PyBadge_
 * _Nordic nRF52840 on Adafruit ItsyBitsy nRF52840 Express_
+* _STM32L4_
 
 
 
