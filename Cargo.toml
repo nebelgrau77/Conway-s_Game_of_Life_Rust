@@ -1,0 +1,32 @@
+[package]
+name = "conway"
+version = "0.1.0"
+authors = ["nebelgrau <nebelgrau@gmx.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cortex-m = "0.6.3"
+stm32l4 = {version = "0.12", features = ["rt", "stm32l4x2"]}
+stm32l4xx-hal = {version="0.6", features = ["rt", "stm32l4x2", "unproven"]}
+
+as-slice = "0.1.0"
+embedded-hal = { version = "0.2.3", features = ["unproven"] }
+cortex-m-rt = "0.6.8"
+cortex-m-semihosting = "0.3.2"
+void = { version = "1.0.2", default-features = false }
+cast = { version = "0.2.2", default-features = false }
+nb = "0.1.2"
+panic-halt = "0.2"
+
+ssd1306 = {version ="0.3.0-alpha.4", features=["graphics"]}
+embedded-graphics = "0.6.0-alpha.3"
+
+rand = {version = "0.7.3", default-features = false, features = [ "small_rng" ]}
+arrayvec = {version = "0.5.1", default-features = false}
+
+[profile.release]
+debug = true
+lto = true
+opt-level = "s"
