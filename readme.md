@@ -1,4 +1,4 @@
-# Conway-s_Game_Of_Life
+# Conway's Game Of Life
 
 My original MicroPython code ported to Rust on STM32F1 "blue pill", and then to other Cortex-M boards.
 It's visibly faster on 72MHz "blue pill" in Rust than on 240MHz ESP32 in MicroPython :)
