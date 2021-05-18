@@ -1,4 +1,4 @@
-# Conway-s_Game_Of_Life
+# Conway's Game Of Life
 
 My original MicroPython code ported to Rust on STM32L432.
 

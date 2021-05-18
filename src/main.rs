@@ -12,8 +12,7 @@ use cortex_m;
 use cortex_m_rt::entry;
 use stm32l4xx_hal::{
     delay::Delay,
-    prelude::*,
-    serial::{Config, Serial},
+    prelude::*,    
     i2c::I2c,
     hal::blocking::rng::Read,
     };
@@ -27,14 +26,11 @@ use embedded_graphics::{
     style::TextStyleBuilder,
     };
 
-use rand::prelude::*;
-
 use arrayvec::ArrayString;
 
 const BOOT_DELAY_MS: u16 = 100; 
 
 mod game;
-
 use game::*;
 
 static WX: i16 = 64; // grid width
@@ -57,15 +53,13 @@ fn main() -> ! {
         .freeze(&mut flash.acr, &mut pwr);
 
     let mut gpioa = dp.GPIOA.split(&mut rcc.ahb2);
-    let mut gpiob = dp.GPIOB.split(&mut rcc.ahb2);
 
     let mut delay = Delay::new(cp.SYST, clocks);
 
     //delay necessary for the I2C to initiate correctly and start on boot without having to reset the board
     delay.delay_ms(BOOT_DELAY_MS);
 
-    let mut scl = gpioa.pa9.into_open_drain_output(&mut gpioa.moder, &mut gpioa.otyper);
-    
+    let mut scl = gpioa.pa9.into_open_drain_output(&mut gpioa.moder, &mut gpioa.otyper);   
     scl.internal_pull_up(&mut gpioa.pupdr, true);
     let scl = scl.into_af4(&mut gpioa.moder, &mut gpioa.afrh);
 
@@ -78,16 +72,9 @@ fn main() -> ! {
         
     disp.init().unwrap();
     
-
     // setup hardware rng
     let mut rng = dp.RNG.enable(&mut rcc.ahb2, clocks);
-
-    //let seed: u32 = rng.get_random_data();
-
-    //let mut soft_rng = SmallRng::seed_from_u64(0xdead_beef_cafe_d00d);
-
-
-
+    
     loop {
                         
         let mut buffer = [0u8; 512];
@@ -99,13 +86,9 @@ fn main() -> ! {
         let mut gen: u16 = 0; // generation counter
 
         // generate first random grid
-
         rng.read(&mut buffer).unwrap();
 
-        //soft_rng.fill_bytes(&mut buffer);
-        
-        // display it
-        
+        // display it 
         for x in 0..WX {
             for y in 0..HY {
                 let pixel = pixelgetter(x,y,buffer);
@@ -121,8 +104,7 @@ fn main() -> ! {
         
         while gen < 1000 {
     
-            // clean up the number area of the counter
-    
+            // clean up the number area of the counter    
             for m in 100..128 {
                 for n in 0..8 {
                     disp.set_pixel(m, n, 0);
@@ -148,9 +130,7 @@ fn main() -> ! {
           
             disp.flush().unwrap();
     
-            }
-
         }
-
     }
+}
 

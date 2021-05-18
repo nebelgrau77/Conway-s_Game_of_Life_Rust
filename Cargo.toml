@@ -23,7 +23,6 @@ panic-halt = "0.2"
 ssd1306 = {version ="0.3.0-alpha.4", features=["graphics"]}
 embedded-graphics = "0.6.0-alpha.3"
 
-rand = {version = "0.7.3", default-features = false, features = [ "small_rng" ]}
 arrayvec = {version = "0.5.1", default-features = false}
 
 [profile.release]
